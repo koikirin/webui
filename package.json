@@ -9,7 +9,7 @@
     "packages/*",
     "plugins/*"
   ],
-  "packageManager": "yarn@4.0.2",
+  "packageManager": "yarn@4.10.3",
   "license": "MIT",
   "scripts": {
     "client": "yakumo --import tsx client",
