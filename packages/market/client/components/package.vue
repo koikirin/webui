@@ -85,7 +85,11 @@ const config = inject(kConfig, {})
 
 const tt = useI18nText()
 
-const homepage = computed(() => props.data.package.links.homepage || props.data.package.links.repository)
+const homepage = computed(() => {
+  const { homepage, repository } = props.data.package.links
+  if (homepage) return homepage
+  if (repository) return repository.replace(/^git\+/, '').replace(/\.git$/, '')
+})
 
 const badge = computed(() => {
   for (const type in badges) {
