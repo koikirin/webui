@@ -13,6 +13,8 @@
       </el-select>
     </template>
 
+    <p v-if="depString">当前完整版本：{{ depString }}</p>
+
     <p class="danger" v-if="danger">{{ danger }}</p>
     <p class="warning" v-if="warning">{{ warning }}</p>
 
@@ -269,6 +271,17 @@ const result = computed(() => {
   if (result === 'danger' || danger.value) return 'danger'
   if (result === 'warning' || warning.value) return 'warning'
   return result
+})
+
+const depString = computed(() => {
+  const dep = store.dependencies?.[active.value]
+  if (!dep) return
+  if (dep.protocol === 'git') {
+    return `${dep.path}#tag=${dep.request}` + (dep.workspaceName ? `&workspace=${dep.workspaceName}` : '')
+  }
+  if (dep.protocol === 'npm' && dep.path) {
+    return `npm:${dep.path}@${dep.request}`
+  }
 })
 
 function shouldFetchRegistry(name: string) {
