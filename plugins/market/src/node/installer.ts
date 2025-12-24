@@ -239,6 +239,7 @@ class Installer extends Service {
       return this.fullCache[name]
     } catch (e) {
       logger.warn(`Cannot get package ${name} with ${path}: ${e.message}`)
+      this.pkgTasks[name] = undefined
     }
   }
 
@@ -268,7 +269,8 @@ class Installer extends Service {
       this.flushData()
       return this.fullCache[name]
     } catch (e) {
-      logger.warn(e.message)
+      logger.warn(`Cannot get git package ${name} with ${path}: ${e.message}`)
+      this.pkgTasks[name] = undefined
     }
   }
 
@@ -350,10 +352,12 @@ class Installer extends Service {
     this.ctx.get('console')?.refresh('packages')
   }
 
-  refresh(refresh = false) {
-    this.pkgTasks = {}
-    this.fullCache = {}
-    this.tempCache = {}
+  refresh(refresh = false, purge = true) {
+    if (purge) {
+      this.pkgTasks = {}
+      this.fullCache = {}
+      this.tempCache = {}
+    }
     this.depTask = this._getDeps()
     if (!refresh) return
     this.refreshData()

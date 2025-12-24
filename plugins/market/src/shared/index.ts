@@ -4,7 +4,7 @@ import { SearchObject, SearchResult } from '@koishijs/registry'
 
 declare module '@koishijs/console' {
   interface Events {
-    'market/refresh'(): void
+    'market/refresh'(purge: boolean): void
   }
 
   namespace Console {
@@ -24,7 +24,7 @@ export abstract class MarketProvider extends DataService<MarketProvider.Payload>
   constructor(ctx: Context) {
     super(ctx, 'market', { authority: 4 })
 
-    ctx.console.addListener('market/refresh', () => this.start(true), { authority: 4 })
+    ctx.console.addListener('market/refresh', (purge) => this.start(true, purge), { authority: 4 })
 
     ctx.on('console/connection', async (client) => {
       if (!ctx.console.clients[client.id]) return
@@ -34,7 +34,7 @@ export abstract class MarketProvider extends DataService<MarketProvider.Payload>
     })
   }
 
-  start(refresh = false): Awaitable<void> {
+  start(refresh = false, purge = true): Awaitable<void> {
     this._task = null
     this._error = null
     this._timestamp = Date.now()

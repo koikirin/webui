@@ -117,7 +117,7 @@ export default (ctx: Context) => {
   ctx.action('market.refresh', {
     shortcut: 'ctrl+r',
     disabled: () => !['market', 'dependencies'].includes(router.currentRoute.value?.meta?.activity.id),
-    action: (scope) => send('market/refresh'),
+    action: (scope) => send('market/refresh', true),
   })
 
   ctx.action('market.install', {
@@ -131,6 +131,11 @@ export default (ctx: Context) => {
     action() {
       showManual.value = true
     },
+  })
+
+  ctx.action('dependencies.refresh', {
+    disabled: () => router.currentRoute.value?.meta?.activity.id !== 'dependencies',
+    action: (scope) => send('market/refresh', false),
   })
 
   ctx.menu('market', [{
@@ -156,6 +161,10 @@ export default (ctx: Context) => {
     id: '.manual',
     icon: 'add',
     label: '手动添加',
+  }, {
+    id: '.refresh',
+    icon: 'dependencies:refresh',
+    label: '刷新失败项',
   }, {
     id: 'market.refresh',
     icon: 'refresh',
