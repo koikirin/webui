@@ -1,0 +1,43 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish_tag:
+    if: |
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, '[ci skip]')
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Buildplate
+        uses: actions/checkout@v4
+        with:
+          repository: koikirin/buildplate
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          path: external/source
+      - name: Set up Node
+        uses: actions/setup-node@v4
+      - name: Install
+        run: |
+          yarn --no-immutable
+          yarn yakumo resolution
+          yarn --no-immutable
+      - name: Build
+        run: |
+          yarn yakumo esbuild client
+          yarn yakumo --import tsx build
+      - name: Push
+        run: |
+          cd external/source
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          yarn workspaces foreach --all exec 'git add -f lib || true; git add -f dist || true'
+          git commit -m "[skip ci] ${GITHUB_REF#refs/tags/}" || true
+          git tag -f "${GITHUB_REF#refs/tags/}"
+          git push -f origin ${GITHUB_REF}
