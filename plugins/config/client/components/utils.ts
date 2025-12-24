@@ -50,13 +50,13 @@ function getEnvInfo(name: string) {
     const required = !local.package.peerDependenciesMeta?.[name]?.optional
     const active = !!store.packages[name]?.runtime?.id
     result.peer[name] = { required, active }
-    for (const service of store.packages[name]?.manifest?.service.implements ?? []) {
+    for (const service of store.packages[name]?.manifest?.service?.implements ?? []) {
       services.add(service)
     }
   }
 
   // check implementations
-  for (const name of local.manifest.service.implements) {
+  for (const name of local.manifest.service?.implements ?? []) {
     if (name === 'adapter') continue
     result.impl.push(name)
   }

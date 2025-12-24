@@ -28,13 +28,13 @@
     <k-markdown inline class="desc" :source="tt(data.manifest?.description) ?? ''"></k-markdown>
     <div class="footer">
       <el-tooltip :content="timeAgo(data.updatedAt)" placement="top">
-        <a class="truncate" target="_blank" :href="data.package.links.npm">
+        <a class="truncate" target="_blank" :href="data.package.links?.npm">
           <market-icon name="tag"></market-icon>{{ data.package.version }}
         </a>
       </el-tooltip>
       <template v-if="data.installSize">
         <span class="spacer"></span>
-        <a class="truncate" target="_blank" :href="data.package.links.size">
+        <a class="truncate" target="_blank" :href="data.package.links?.size">
           <market-icon name="file-archive"></market-icon>{{ formatSize(data.installSize) }}
         </a>
       </template>
@@ -86,7 +86,7 @@ const config = inject(kConfig, {})
 const tt = useI18nText()
 
 const homepage = computed(() => {
-  const { homepage, repository } = props.data.package.links
+  const { homepage, repository } = props.data.package.links ?? {}
   if (homepage) return homepage
   if (repository) return repository.replace(/^git\+/, '').replace(/\.git$/, '')
 })
