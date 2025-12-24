@@ -465,6 +465,7 @@ class Installer extends Service {
         // I have no idea why this happens and how to fix it.
         logger.error(error)
       }
+      await this.ctx.parallel('shutdown' as any)
       this.ctx.loader.fullReload()
     }
     this.refreshData()
