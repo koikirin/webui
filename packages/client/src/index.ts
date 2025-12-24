@@ -5,6 +5,7 @@ import { resolve } from 'path'
 import { Context } from 'yakumo'
 import vue from '@vitejs/plugin-vue'
 import yaml from '@maikolib/vite-plugin-yaml'
+import { pathToFileURL } from 'url'
 
 declare module 'yakumo' {
   interface PackageConfig {
@@ -79,7 +80,7 @@ export async function build(root: string, config: vite.UserConfig = {}) {
     },
   } as vite.InlineConfig, config)) as RollupOutput[]
 
-  for (const item of results[0].output) {
+  for (const item of results[0]?.output ?? []) {
     if (item.fileName === 'index.mjs') item.fileName = 'index.js'
     const dest = root + '/dist/' + item.fileName
     if (item.type === 'asset') {
@@ -170,7 +171,7 @@ export function apply(ctx: Context) {
       let config: vite.UserConfig = {}
       if (meta.yakumo?.client) {
         const filename = resolve(ctx.yakumo.cwd + path, meta.yakumo.client)
-        const exports = (await import(filename)).default
+        const exports = (await import(pathToFileURL(filename).href)).default
         if (typeof exports === 'function') {
           await exports()
           continue
