@@ -437,7 +437,7 @@ class Installer extends Service {
 
   async install(deps: Dict<string>, forced?: boolean) {
     const localDeps = await this._getDeps(true).then((res) => filterKeys(res, (name) => Object.hasOwn(deps, name)))
-    deps = mapValues(deps, (request, name) => Object.hasOwn(localDeps, name) ? Dependency.stringify(localDeps[name], request) : request)
+    deps = mapValues(deps, (request, name) => Object.hasOwn(localDeps, name) && valid(request) ? Dependency.stringify(localDeps[name], request) : request)
     await this.override(deps)
 
     for (const name in deps) {
@@ -461,6 +461,7 @@ class Installer extends Service {
       try {
         if (!(require.resolve(name) in require.cache)) continue
       } catch (error) {
+        if (Dependency.isResolution(key)) continue
         // FIXME https://github.com/koishijs/webui/issues/273
         // I have no idea why this happens and how to fix it.
         logger.error(error)

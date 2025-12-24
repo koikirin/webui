@@ -41,6 +41,7 @@ import { hasUpdate } from '../utils'
 import { addManual } from './utils'
 import ManualInstall from './manual.vue'
 import PackageView from './package.vue'
+import { valid } from 'semver'
 
 const config = useConfig()
 
@@ -58,8 +59,8 @@ watch(() => store.market?.registry, (registry) => {
   dispose?.()
   if (!registry) return
   dispose = watch(() => config.value.market.override, (object) => {
-    Object.keys(object).forEach(async (name) => {
-      if (store.dependencies[name]) return
+    Object.entries(object).forEach(async ([name, request]) => {
+      if (store.dependencies[name] || !valid(request)) return
       addManual(name)
     })
   }, { immediate: true, deep: true })
