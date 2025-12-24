@@ -24,6 +24,7 @@ jobs:
       - name: Install
         run: |
           yarn --no-immutable
+          yarn yakumo prepare
           yarn yakumo resolution
           yarn --no-immutable
       - name: Build
@@ -48,6 +49,7 @@ jobs:
       - name: Install
         run: |
           yarn --no-immutable
+          yarn yakumo prepare
           yarn yakumo resolution
           yarn --no-immutable
       - name: Lint
@@ -70,6 +72,7 @@ jobs:
       - name: Install
         run: |
           yarn --no-immutable
+          yarn yakumo prepare
           yarn yakumo resolution
           yarn --no-immutable
       - name: Test
