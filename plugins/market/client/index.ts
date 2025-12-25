@@ -164,7 +164,7 @@ export default (ctx: Context) => {
   }, {
     id: '.refresh',
     icon: 'dependencies:refresh',
-    label: '刷新失败项',
+    label: '重试',
   }, {
     id: 'market.refresh',
     icon: 'refresh',
