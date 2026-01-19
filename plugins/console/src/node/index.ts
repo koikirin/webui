@@ -129,8 +129,12 @@ class NodeConsole extends Console {
     const { uiPath } = this.config
 
     this.ctx.server.get(uiPath + '(.*)', async (ctx, next) => {
+      console.log('> ', ctx.path);
+
       await next()
       if (ctx.body || ctx.response.body) return
+
+      console.log('serving', ctx.path);
 
       // add trailing slash and redirect
       if (ctx.path === uiPath && !uiPath.endsWith('/')) {
@@ -147,8 +151,7 @@ class NodeConsole extends Console {
         const [key] = name.slice(8).split('/', 1)
         if (this.entries[key]) {
           const files = makeArray(this.getFiles(this.entries[key].files))
-          let filename = files[0] + name.slice(8 + key.length)
-          filename = resolve(files[0], filename)
+          const filename = resolve(files[0], name.slice(8 + key.length))
           if (!filename.startsWith(files[0]) && !filename.includes('node_modules')) {
             return ctx.status = 403
           }
@@ -171,6 +174,7 @@ class NodeConsole extends Console {
       }
 
       const stats = await fs.stat(filename).catch<Stats>(noop)
+
       if (stats?.isFile()) return sendFile(filename)
       const template = await fs.readFile(resolve(this.root, 'index.html'), 'utf8')
       ctx.type = 'html'
