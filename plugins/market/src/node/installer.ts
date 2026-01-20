@@ -63,6 +63,8 @@ export interface Dependency {
 export namespace Dependency {
   export const RESOLUTION_PREFIX = '▶'
 
+  export const agent = which()
+
   export function isResolution(name: string) {
     return name.startsWith(RESOLUTION_PREFIX)
   }
@@ -102,7 +104,9 @@ export namespace Dependency {
         name,
         protocol: 'git',
         path: gitMatch[1].split('#')[0],
-        request: gitMatch[1].split('#')[1]?.split('&').find(item => item.startsWith('tag='))?.replace('tag=', '') || '',
+        request: gitMatch[1].includes('#semver:')
+          ? gitMatch[1].split('#semver:')[1]
+          : gitMatch[1].split('#')[1]?.split('&').find(item => item.startsWith('tag='))?.replace('tag=', '') || '',
         workspaceName: gitMatch[1].split('#')[1]?.split('&').find(item => item.startsWith('workspace='))?.replace('workspace=', '') || undefined,
       }
     }
@@ -134,7 +138,8 @@ export namespace Dependency {
         }
         return target
       case 'git':
-        return `${dep.path}#tag=${target}` + (dep.workspaceName ? `&workspace=${dep.workspaceName}` : '')
+        if (agent?.name === 'yarn') return `${dep.path}#tag=${target}` + (dep.workspaceName ? `&workspace=${dep.workspaceName}` : '')
+        else return `${dep.path}#semver:${target}`
     }
   }
 }
