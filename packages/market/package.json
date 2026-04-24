@@ -1,7 +1,7 @@
 {
   "name": "@koishijs/market",
   "description": "Market UI for Koishi",
-  "version": "4.2.7",
+  "version": "4.2.9",
   "main": "client/index.ts",
   "files": [
     "client"
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@koishijs/components": "^1.5.22",
-    "cosmokit": "^1.7.2",
+    "cosmokit": "^1.8.1",
     "spark-md5": "^3.0.2"
   }
 }

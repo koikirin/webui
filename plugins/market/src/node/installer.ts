@@ -238,6 +238,7 @@ class Installer extends Service {
     try {
       const registry = await this.http.get<Registry>(`/${path}`)
       this.fullCache[name] = this.tempCache[name] = getVersions(Object.values(registry.versions).filter((remote) => {
+        if (name === 'koishi') return satisfies(remote.version, '4')
         return !Scanner.isPlugin(path) || Scanner.isCompatible('4', remote)
       }))
       this.flushData()
