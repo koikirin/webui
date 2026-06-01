@@ -38,7 +38,7 @@ class MarketProvider extends BaseMarketProvider {
     const registry = this.ctx.installer.http
 
     this.failed = []
-    this.scanner = new Scanner(registry.get)
+    this.scanner = new Scanner(registry.get.bind(registry))
     if (this.http) {
       const result = await this.http.get<SearchResult>('')
       this.scanner.objects = result.objects.filter(object => !object.ignored)
